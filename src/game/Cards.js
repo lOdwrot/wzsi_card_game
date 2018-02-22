@@ -66,8 +66,8 @@ const commonSupproters = {
         hp: 4,
         attack: 4,
         cost: 4,
-        imgUrl: 'https://media-hearth.cursecdn.com/avatars/330/920/486.png',
-        infoLink: 'https://www.hearthpwn.com/cards/486-murloc-scout'
+        imgUrl: 'https://media-hearth.cursecdn.com/avatars/334/821/397.png',
+        infoLink: 'https://www.hearthpwn.com/cards/397-brewmaster'
     }
 }
 

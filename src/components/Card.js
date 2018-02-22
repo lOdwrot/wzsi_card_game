@@ -1,19 +1,23 @@
 import React, { Component } from 'react'
-
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
+import Tooltip from 'material-ui/Tooltip'
 
 export default class CardComponent extends Component {
 
   constructor() {
+    super()
     this.state = {haveFocus: false}
   }
 
   render() {
     return (
       <div
-        style={width: '200px'}
-        onMouseEnter={this.setState({...this.state, haveFocus: true})}
-        onMouseLeave={this.setState({...this.state, haveFocus: false})}>
+        onClick={() => this.props.clickAction ? this.props.clickAction() : console.log('No on click action defined')}
+        style={{width: '200px'}}
+        onMouseEnter={() => this.setState({...this.state, haveFocus: true})}
+        onMouseLeave={() => this.setState({...this.state, haveFocus: false})}>
         {this.renderImage(this.props.card.imgUrl, this.state.haveFocus)}
+        {this.renderInfo(this.props.card)}
       </div>
     )
   }
@@ -24,13 +28,44 @@ export default class CardComponent extends Component {
           style={{
             backgroundImage: `url(${imgUrl})`,
             width: '100%',
-            height: '100%',
-            minHeight: '250px',
-            backgroundPosition: 'center center',
-            backgroundSize: 'contain',
+            minHeight: '180px',
+            backgroundPosition: 'center top',
+            backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
-            opacity: haveFocus ? 1 : 0.75}}>
+            opacity: haveFocus ? 1 : 0.85}}>
         </div>
+    )
+  }
+
+  renderInfo(card) {
+    return (
+      <div>
+        <Table>
+          <TableBody>
+            {['hp', 'attack', 'cost'].map(v =>
+                card[v] ?
+                  (<TableRow key={v}>
+                    <TableCell>{v}</TableCell>
+                    <TableCell>{card[v]}</TableCell>
+                  </TableRow>) :
+                  null
+            )}
+            {card.special &&
+              <TableRow>
+                <TableCell>
+                  <Tooltip id="tooltip-special" title={`special ${JSON.stringify(card.special)}`}>
+                    <a>special info</a>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>}
+              <TableRow>
+                <TableCell>
+                  <a href={card.infoLink}>Additional Info</a>
+                </TableCell>
+              </TableRow>
+          </TableBody>
+        </Table>
+      </div>
     )
   }
 }
