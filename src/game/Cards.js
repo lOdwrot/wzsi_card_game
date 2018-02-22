@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export const TYPE_SPELL = 'TYPE_SPELL'
 export const TYPE_COMMON_SUPPORTER = 'TYPE_COMMON_SUPPORTER'
 export const TYPE_SPECIAL_SUPPORTER = 'TYPE_SPECIAL_SUPPORTER'
@@ -125,9 +127,9 @@ const spells = {
             }
         }
     },
-    sealofChampions : {
+    peruse : {
         type: TYPE_SPELL,
-        name: 'Seal of Champions',
+        name: 'Peruse',
         cost: 1,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/334/275/49902.png',
         infoLink: 'https://www.hearthpwn.com/cards/49902-peruse',
@@ -137,7 +139,29 @@ const spells = {
     }
 }
 
-export const getAllCards = () => ({...commonSupproters, specialSupproters, spells})
+const deck = {
+  murlocScout: 2,
+  flameofAzzinoth: 2,
+  spiderTank: 2,
+  carrionGrub: 2,
+  brewmaster: 2,
+  scarletCrusader: 2,
+  flyingMachine: 2,
+  sealofChampions: 2,
+  sugglerRun: 2,
+  peruse: 2
+}
+
+export const getAllCards = () => ({...commonSupproters, ...specialSupproters, ...spells})
 export const getSpells = () => ({...spells})
 export const getSupporters = () => ({...commonSupproters})
 export const getSpecialSupproters = () => ({...specialSupproters})
+export const getDeck = () => {
+  let result = []
+  let availableCards = getAllCards()
+  _.forOwn(deck , (v, key) => {
+    for(let i = 0; i < v; i++) result.push(availableCards[key])
+  })
+
+  return _.shuffle(result)
+}
