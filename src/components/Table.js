@@ -47,7 +47,7 @@ export default class Table extends Component {
       <div>
         <button onClick={() => {
           table.initGame()
-          this.refreshTableState()
+          this.refreshTableState({selectedCard: {}})
         }}>
           Init game
         </button>
@@ -122,7 +122,7 @@ export default class Table extends Component {
 
   clickTable() {
     if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.state == cards.STATE_IN_HAND) {
-      table.playCard(this.state.selectedCard, 'TABLE')
+      table.playCard(this.state.selectedCard, cards.PLACE_TABLE)
       this.refreshTableState({selectedCard: {}})
     }
   }

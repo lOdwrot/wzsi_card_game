@@ -30,6 +30,11 @@ export const ALL_ENEMY_SUPPORTERS = 'ALL_ENEMY_SUPPORTERS'
 export const MY_HERO = 'MY_HERO'
 export const ENEMY_HERO = 'ENEMY_HERO'
 
+//put places
+export const PLACE_TABLE = 'PLACE_TABLE'
+export const PLACE_MY_SUPPORTER = 'PLACE_MY_SUPPORTER'
+export const PLACE_ENEMY_SUPPORTET = 'PLACE_ENEMY_SUPPORTET'
+
 
 const commonSupproters = {
     murlocScout : {
@@ -116,6 +121,7 @@ const specialSupproters = {
 const spells = {
     sealofChampions : {
         type: TYPE_SPELL,
+        availablePlace: PLACE_MY_SUPPORTER,
         name: 'Seal of Champions',
         cost: 3,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/328/22/22373.png',
@@ -130,6 +136,7 @@ const spells = {
     },
     sugglerRun : {
         type: TYPE_SPELL,
+        availablePlace: PLACE_TABLE,
         name: 'Smuggler Run',
         cost: 1,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/329/1/49676.png',
@@ -146,6 +153,7 @@ const spells = {
     },
     arcaneExplosion : {
         type: TYPE_SPELL,
+        availablePlace: PLACE_TABLE,
         name: 'Arcane Explosion',
         cost: 2,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/329/922/56.png',

@@ -33,6 +33,7 @@ class Hero {
 
   hurt(damage) {
     this.hp -= damage
+    if(this.hp < 0) console.log(this.name + ' defeated!')
   }
 
   playCardOnTable(card) {

@@ -41,13 +41,32 @@ const setPlayerTurn = (player) => {
 }
 
 export const changePlayerTurn = () => {
+  if(player1.hp <= 0 || player2.hp <= 0) {
+    return console.log('Game finised')
+  }
+
   setPlayerTurn(currentPlayer.name == player1.name ? player2 : player1)
   currentPlayer.initTurn()
 }
 
 export const playCard = (source, target) => {
+  if(player1.hp <= 0 || player2.hp <= 0) {
+    return console.log('Game finised')
+  }
 
-  if(target == 'TABLE' && source.state == cards.STATE_IN_HAND && currentPlayer.mana >= source.cost) {
+  //validate move
+  //check move is valid when play spell
+  if(source.type == cards.TYPE_SPELL) {
+    if(
+      (source.availablePlace == cards.PLACE_TABLE && target != cards.PLACE_TABLE) ||
+      (source.availablePlace == cards.PLACE_MY_SUPPORTER && target.ownerName != currentPlayer.name) ||
+      (source.availablePlace == cards.PLACE_ENEMY_SUPPORTET && target.ownerName == currentPlayer.name)
+    )  {
+      return console.log(`Invalid place type, expected: ${source.availablePlace}`)
+    }
+  }
+
+  if(target == cards.PLACE_TABLE && source.state == cards.STATE_IN_HAND && currentPlayer.mana >= source.cost) {
     currentPlayer.playCardOnTable(source)
     if(source.type == cards.TYPE_SPELL) {
         useSpell(source.special, target, source)
@@ -56,7 +75,7 @@ export const playCard = (source, target) => {
     }
   }
 
-  if(typeof source != 'object' ||  typeof target != 'object') return
+  if(typeof source != 'object' ||  typeof target != 'object') return console.log('Invalid target')
 
   if(source.state == cards.STATE_ON_TABLE &&
     [cards.TYPE_COMMON_SUPPORTER, cards.TYPE_SPECIAL_SUPPORTER].includes(source.type) &&
@@ -101,7 +120,8 @@ const fight = (source, target) => {
 
 const damage = (target, value) => {
     if(_.isEmpty(target.effects) || !target.effects.includes(cards.ONE_TIME_SHIELD)) {
-      target.hp -= value
+      if(target.hurt)target.hurt(value)
+      else target.hp -= value
     } else {
       target.effects.splice(target.effects.indexOf(cards.ONE_TIME_SHIELD), 1)
     }
