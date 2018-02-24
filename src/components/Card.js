@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table'
 import Tooltip from 'material-ui/Tooltip'
+import {TYPE_COMMON_SUPPORTER, TYPE_SPECIAL_SUPPORTER} from '../game/Cards.js'
 
 export default class CardComponent extends Component {
 
@@ -57,6 +58,13 @@ export default class CardComponent extends Component {
                   </TableRow>) :
                   null
             )}
+            {[TYPE_COMMON_SUPPORTER, TYPE_SPECIAL_SUPPORTER].includes(card.type) &&
+              <TableRow  style={{height: 'unset'}}>
+                <TableCell>
+                  {'Ready for attack: ' + card.attackReady}
+                </TableCell>
+              </TableRow>
+            }
             {card.special &&
               <TableRow style={{height: 'unset'}}>
                 <TableCell>

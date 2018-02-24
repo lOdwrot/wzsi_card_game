@@ -151,11 +151,11 @@ const deck = {
   spiderTank: 2,
   carrionGrub: 2,
   brewmaster: 2,
-  scarletCrusader: 2,
-  flyingMachine: 2,
-  sealofChampions: 2,
-  sugglerRun: 2,
-  peruse: 2
+  // scarletCrusader: 2,
+  // flyingMachine: 2,
+  // sealofChampions: 2,
+  // sugglerRun: 2,
+  // peruse: 2
 }
 
 export const getAllCards = () => ({...commonSupproters, ...specialSupproters, ...spells})
@@ -169,7 +169,7 @@ export const getDeck = (player = {}) => {
   let result = []
   let availableCards = getAllCards()
   _.forOwn(deck , (v, key) => {
-    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++, ownerName: player.name, state: STATE_IN_DECK})
+    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++, ownerName: player.name, state: STATE_IN_DECK, attackReady: false})
   })
 
   return _.shuffle(result)

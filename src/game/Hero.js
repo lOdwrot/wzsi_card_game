@@ -16,6 +16,7 @@ class Hero {
     this.deck = cards.getDeck(this)
     this.initialHp = 20
     this.hp = this.initialHp
+    this.attack = 0
     this.mana = 0
     this.hand = []
     this.tableCard = []
@@ -44,6 +45,15 @@ class Hero {
     if(card.type == cards.TYPE_SPECIAL_SUPPORTER || card.type == cards.TYPE_SPELL) {
 
     }
+  }
+
+  refreshHand() {
+    this.tableCard = this.tableCard.filter(v => v.hp > 0)
+  }
+
+  initTurn() {
+    this.getCard()
+    this.tableCard.forEach(v => v.attackReady = true)
   }
 }
 

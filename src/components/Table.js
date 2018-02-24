@@ -19,6 +19,7 @@ export default class Table extends Component {
     this.clickCard = this.clickCard.bind(this)
     this.clickTable = this.clickTable.bind(this)
     this.endTurn = this.endTurn.bind(this)
+    this.clickHero = this.clickHero.bind(this)
   }
 
   refreshTableState(additionalChanges = {}) {
@@ -90,7 +91,17 @@ export default class Table extends Component {
   }
 
   renderPlayerInfo(player) {
-    return player ? `Player: ${player.name} Hp: ${player.hp} Mana: ${player.mana}` : 'No player'
+    if(!player) return 'No player'
+    let resultStr = this.state.currentPlayer && this.state.currentPlayer.name == player.name ? '=> ' : ''
+    return (
+      <div>
+        {this.state.currentPlayer && this.state.currentPlayer.name == player.name ? '=> ' : ''}
+        <button onClick={() => this.clickHero(player)}>
+          {`Hero: ${player.name}`}
+        </button>
+        { `Hp: ${player.hp} Mana: ${player.mana}`}
+      </div>
+    )
   }
 
   clickCard(card) {
@@ -103,12 +114,22 @@ export default class Table extends Component {
       this.setState({...this.state, selectedCard: card})
     }else if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.id == card.id) {
       this.setState({...this.state, selectedCard: {}})
+    }else if(!_.isEmpty(this.state.selectedCard) && card.state == cards.STATE_ON_TABLE) {
+      table.playCard(this.state.selectedCard, card)
+      this.refreshTableState({selectedCard: {}})
     }
   }
 
   clickTable() {
     if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.state == cards.STATE_IN_HAND) {
       table.playCard(this.state.selectedCard, 'TABLE')
+      this.refreshTableState({selectedCard: {}})
+    }
+  }
+
+  clickHero(player) {
+    if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.state == cards.STATE_ON_TABLE) {
+      table.playCard(this.state.selectedCard, player)
       this.refreshTableState({selectedCard: {}})
     }
   }
