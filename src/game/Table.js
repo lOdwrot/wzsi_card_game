@@ -108,7 +108,7 @@ const useSpell = (special, target, source) => {
     if(special.type == cards.MODIFIE_STATS) {
       if(specyfication.type == cards.INCREASE) {
         if(specyfication.hp && specyfication.hp > 0) v.hp += specyfication.hp
-        else damage(v, specyfication.hp)
+        else damage(v, -specyfication.hp)
         if(specyfication.attack) v.attack += specyfication.attack
       }
     } else if(special.type == cards.GIVE_EFFECT) {
