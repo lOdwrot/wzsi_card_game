@@ -41,10 +41,6 @@ class Hero {
     if(card.type == cards.TYPE_COMMON_SUPPORTER || card.type == cards.TYPE_SPECIAL_SUPPORTER) {
       this.tableCard.push({...card, state: cards.STATE_ON_TABLE})
     }
-
-    if(card.type == cards.TYPE_SPECIAL_SUPPORTER || card.type == cards.TYPE_SPELL) {
-
-    }
   }
 
   refreshHand() {

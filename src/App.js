@@ -12,6 +12,8 @@ class App extends Component {
     return (
       <div className="App">
         <button onClick={() => console.log(getDeck())}>shuffle deck</button>
+        <button onClick={() => this.setState({...this.state, activeCmp: 'AVAILABLE_CARDS'})}>Show all cards</button>
+        <button onClick={() => this.setState({...this.state, activeCmp: 'TABLE'})}>Show table</button>
         {this.state.activeCmp == 'AVAILABLE_CARDS' && <AvailableCards/>}
         {this.state.activeCmp == 'TABLE' && <Table/>}
       </div>

@@ -14,8 +14,8 @@ export const STATE_END = 'STATE_END'
 //special abilities names
 export const ONE_TIME_SHIELD = 'oneTimeShield'
 export const MODIFIE_STATS = 'modifieStats'
+export const GIVE_EFFECT = 'giveEffect'
 export const MULTIPLAY_ATTACK = 'multiplayAttack'
-export const GET_CARD = 'getCard'
 
 //modifie stats types
 export const INCREASE = 'increase'
@@ -39,7 +39,8 @@ const commonSupproters = {
         attack: 1,
         cost: 1,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/330/920/486.png',
-        infoLink: 'https://www.hearthpwn.com/cards/486-murloc-scout'
+        infoLink: 'https://www.hearthpwn.com/cards/486-murloc-scout',
+        effects: []
     },
     flameofAzzinoth : {
         type: TYPE_COMMON_SUPPORTER,
@@ -48,7 +49,8 @@ const commonSupproters = {
         attack: 2,
         cost: 1,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/334/794/455.png',
-        infoLink: 'https://www.hearthpwn.com/cards/455-flame-of-azzinoth'
+        infoLink: 'https://www.hearthpwn.com/cards/455-flame-of-azzinoth',
+        effects: []
     },
     spiderTank : {
         type: TYPE_COMMON_SUPPORTER,
@@ -57,7 +59,8 @@ const commonSupproters = {
         attack: 3,
         cost: 3,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/331/448/12184.png',
-        infoLink: 'https://www.hearthpwn.com/cards/12184-spider-tank'
+        infoLink: 'https://www.hearthpwn.com/cards/12184-spider-tank',
+        effects: []
     },
     carrionGrub : {
         type: TYPE_COMMON_SUPPORTER,
@@ -66,7 +69,8 @@ const commonSupproters = {
         attack: 2,
         cost: 3,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/334/17/35218.png',
-        infoLink: 'https://www.hearthpwn.com/cards/35218-carrion-grub'
+        infoLink: 'https://www.hearthpwn.com/cards/35218-carrion-grub',
+        effects: []
     },
     brewmaster : {
         type: TYPE_COMMON_SUPPORTER,
@@ -88,20 +92,23 @@ const specialSupproters = {
         cost: 3,
         imgUrl: 'https://media-hearth.cursecdn.com/avatars/330/390/475.png',
         infoLink: 'https://www.hearthpwn.com/cards/475-scarlet-crusader',
-        special: {
-            [ONE_TIME_SHIELD]: 1
-        }
+        effects: [ONE_TIME_SHIELD]
     },
-    flyingMachine : {
+    nightblade : {
         type: TYPE_SPECIAL_SUPPORTER,
-        name: 'Flying Machine',
+        name: 'Nightblade',
         hp: 4,
-        attack: 1,
-        cost: 1,
-        imgUrl: 'https://media-hearth.cursecdn.com/avatars/331/577/12247.png',
-        infoLink: 'https://www.hearthpwn.com/cards/12247-flying-machine',
-        special: {
-            [MULTIPLAY_ATTACK]: 1
+        attack: 4,
+        cost: 5,
+        imgUrl: 'https://media-hearth.cursecdn.com/avatars/331/64/184.png',
+        infoLink: 'https://www.hearthpwn.com/cards/184-nightblade',
+        appearEffect: {
+            target: ENEMY_HERO,
+            type: MODIFIE_STATS,
+            specyfication: {
+                type: INCREASE,
+                hp: -3
+            }
         }
     }
 }
@@ -115,7 +122,10 @@ const spells = {
         infoLink: 'https://www.hearthpwn.com/cards/22373-seal-of-champions',
         special: {
             target: SELECTED_ALLIE_SUPPORTER,
-            [ONE_TIME_SHIELD]: 1
+            type: GIVE_EFFECT,
+            specyfication: {
+                effect: ONE_TIME_SHIELD
+            }
         }
     },
     sugglerRun : {
@@ -126,21 +136,27 @@ const spells = {
         infoLink: 'https://www.hearthpwn.com/cards/49676-smugglers-run',
         special: {
             target: ALL_IN_HAND_SUPPORTERS,
-            [MODIFIE_STATS]: {
+            type: MODIFIE_STATS,
+            specyfication: {
                 type: INCREASE,
                 hp: 1,
                 attack: 1
             }
         }
     },
-    peruse : {
+    arcaneExplosion : {
         type: TYPE_SPELL,
-        name: 'Peruse',
-        cost: 1,
-        imgUrl: 'https://media-hearth.cursecdn.com/avatars/334/275/49902.png',
-        infoLink: 'https://www.hearthpwn.com/cards/49902-peruse',
+        name: 'Arcane Explosion',
+        cost: 2,
+        imgUrl: 'https://media-hearth.cursecdn.com/avatars/329/922/56.png',
+        infoLink: 'https://www.hearthpwn.com/cards/56-arcane-explosion',
         special: {
-            [GET_CARD]: 1
+            target: ALL_ENEMY_SUPPORTERS,
+            type: MODIFIE_STATS,
+            specyfication: {
+                type: INCREASE,
+                hp: -1
+            }
         }
     }
 }
@@ -151,11 +167,11 @@ const deck = {
   spiderTank: 2,
   carrionGrub: 2,
   brewmaster: 2,
-  // scarletCrusader: 2,
-  // flyingMachine: 2,
-  // sealofChampions: 2,
-  // sugglerRun: 2,
-  // peruse: 2
+  scarletCrusader: 2,
+  nightblade: 2,
+  sealofChampions: 2,
+  sugglerRun: 2,
+  arcaneExplosion: 2
 }
 
 export const getAllCards = () => ({...commonSupproters, ...specialSupproters, ...spells})
