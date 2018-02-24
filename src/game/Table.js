@@ -66,14 +66,24 @@ export const playCard = (source, target) => {
     }
   }
 
-  if(target == cards.PLACE_TABLE && source.state == cards.STATE_IN_HAND && currentPlayer.mana >= source.cost) {
-    currentPlayer.playCardOnTable(source)
-    if(source.type == cards.TYPE_SPELL) {
-        useSpell(source.special, target, source)
-    } else if(source.type == cards.TYPE_SPECIAL_SUPPORTER && source.appearEffect) {
-        useSpell(source.appearEffect, source.appearEffect.target)
-    }
+  if(source.cost > currentPlayer.mana) {
+    return console.log(`Not enough mana points ${source.cost} / ${currentPlayer.mana}`)
   }
+
+  if(source.state == cards.STATE_IN_HAND) {
+    currentPlayer.playCardOnTable(source)
+    if(target == cards.PLACE_TABLE) {
+      if(source.type == cards.TYPE_SPELL) {
+          useSpell(source.special, target, source)
+      } else if(source.type == cards.TYPE_SPECIAL_SUPPORTER && source.appearEffect) {
+          useSpell(source.appearEffect, source.appearEffect.target)
+      }
+    } else if(source.type == cards.TYPE_SPELL) {
+        useSpell(source.special, target, source)
+    }
+    return
+  }
+
 
   if(typeof source != 'object' ||  typeof target != 'object') return console.log('Invalid target')
 
