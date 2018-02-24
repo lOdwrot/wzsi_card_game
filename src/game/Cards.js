@@ -3,7 +3,7 @@ import _ from 'lodash'
 export const TYPE_SPELL = 'TYPE_SPELL'
 export const TYPE_COMMON_SUPPORTER = 'TYPE_COMMON_SUPPORTER'
 export const TYPE_SPECIAL_SUPPORTER = 'TYPE_SPECIAL_SUPPORTER'
-export const TYPE_SECRET = 'TYPE_SECRET'
+export const TYPE_SECRET = 'TYPE_SECRET' //maybe will be implemented later
 
 //special abilities names
 export const ONE_TIME_SHIELD = 'oneTimeShield'
@@ -156,11 +156,14 @@ export const getAllCards = () => ({...commonSupproters, ...specialSupproters, ..
 export const getSpells = () => ({...spells})
 export const getSupporters = () => ({...commonSupproters})
 export const getSpecialSupproters = () => ({...specialSupproters})
+
+var idIterator = 1
+
 export const getDeck = () => {
   let result = []
   let availableCards = getAllCards()
   _.forOwn(deck , (v, key) => {
-    for(let i = 0; i < v; i++) result.push(availableCards[key])
+    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++})
   })
 
   return _.shuffle(result)

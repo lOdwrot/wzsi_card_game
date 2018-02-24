@@ -4,8 +4,8 @@ import Tooltip from 'material-ui/Tooltip'
 
 export default class CardComponent extends Component {
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {haveFocus: false}
   }
 
@@ -44,21 +44,21 @@ export default class CardComponent extends Component {
           <TableBody>
             {['hp', 'attack', 'cost'].map(v =>
                 card[v] ?
-                  (<TableRow key={v}>
+                  (<TableRow key={v} style={{height: 'unset'}}>
                     <TableCell>{v}</TableCell>
                     <TableCell>{card[v]}</TableCell>
                   </TableRow>) :
                   null
             )}
             {card.special &&
-              <TableRow>
+              <TableRow style={{height: 'unset'}}>
                 <TableCell>
                   <Tooltip id="tooltip-special" title={`special ${JSON.stringify(card.special)}`}>
                     <a>special info</a>
                   </Tooltip>
                 </TableCell>
               </TableRow>}
-              <TableRow>
+              <TableRow  style={{height: 'unset'}}>
                 <TableCell>
                   <a href={card.infoLink}>Additional Info</a>
                 </TableCell>
