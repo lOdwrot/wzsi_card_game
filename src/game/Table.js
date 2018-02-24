@@ -1,6 +1,7 @@
 import Hero from './Hero.js'
+import * as cards from './Cards.js'
 
-const INITIAL_CARDS = 4
+const INITIAL_CARDS = 2
 const MAX_MANA = 10
 
 export const TARGET_TABLE = 'TARGET_TABLE'
@@ -34,11 +35,13 @@ const setPlayerTurn = (player) => {
 }
 
 export const changePlayerTurn = () => {
-  setPlayerTurn(currentPlayer.name == player1.name ? player1 : player2)
+  setPlayerTurn(currentPlayer.name == player1.name ? player2 : player1)
 }
 
-export const playCard = (card) => {
-
+export const playCard = (source, target) => {
+  if(target == 'TABLE' && source.state == cards.STATE_IN_HAND && currentPlayer.mana >= source.cost) {
+    currentPlayer.playCardOnTable(source)
+  }
 }
 
 const cardFlow = (card) => {

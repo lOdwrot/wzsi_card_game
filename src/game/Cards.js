@@ -5,6 +5,12 @@ export const TYPE_COMMON_SUPPORTER = 'TYPE_COMMON_SUPPORTER'
 export const TYPE_SPECIAL_SUPPORTER = 'TYPE_SPECIAL_SUPPORTER'
 export const TYPE_SECRET = 'TYPE_SECRET' //maybe will be implemented later
 
+//Card states
+export const STATE_IN_DECK = 'STATE_IN_DECK'
+export const STATE_IN_HAND = 'STATE_IN_HAND'
+export const STATE_ON_TABLE = 'STATE_ON_TABLE'
+export const STATE_END = 'STATE_END'
+
 //special abilities names
 export const ONE_TIME_SHIELD = 'oneTimeShield'
 export const MODIFIE_STATS = 'modifieStats'
@@ -159,11 +165,11 @@ export const getSpecialSupproters = () => ({...specialSupproters})
 
 var idIterator = 1
 
-export const getDeck = () => {
+export const getDeck = (player = {}) => {
   let result = []
   let availableCards = getAllCards()
   _.forOwn(deck , (v, key) => {
-    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++})
+    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++, ownerName: player.name, state: STATE_IN_DECK})
   })
 
   return _.shuffle(result)

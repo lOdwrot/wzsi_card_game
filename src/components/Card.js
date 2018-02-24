@@ -12,8 +12,13 @@ export default class CardComponent extends Component {
   render() {
     return (
       <div
-        onClick={() => this.props.clickAction ? this.props.clickAction() : console.log('No on click action defined')}
-        style={{width: '200px'}}
+        onClick={() => {
+          console.log(this.props.card)
+          this.props.clickAction ? this.props.clickAction() : console.log('No on click action defined')
+        }}
+        style={{
+          width: '200px',
+          border: this.props.selected ? 'solid green' : 'unset'}}
         onMouseEnter={() => this.setState({...this.state, haveFocus: true})}
         onMouseLeave={() => this.setState({...this.state, haveFocus: false})}>
         {this.renderImage(this.props.card.imgUrl, this.state.haveFocus)}
@@ -24,15 +29,17 @@ export default class CardComponent extends Component {
 
   renderImage(imgUrl, haveFocus) {
     return (
-        <div
-          style={{
-            backgroundImage: `url(${imgUrl})`,
-            width: '100%',
-            minHeight: '180px',
-            backgroundPosition: 'center top',
-            backgroundSize: 'cover',
-            backgroundRepeat: 'no-repeat',
-            opacity: haveFocus ? 1 : 0.85}}>
+        <div style={{marginLeft: '10%', marginRight: '10%'}}>
+          <div
+            style={{
+              backgroundImage: `url(${imgUrl})`,
+              width: '100%',
+              minHeight: '135px',
+              backgroundPosition: 'center top',
+              backgroundSize: 'cover',
+              backgroundRepeat: 'no-repeat',
+              opacity: haveFocus ? 1 : 0.85}}>
+          </div>
         </div>
     )
   }

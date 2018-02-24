@@ -13,19 +13,18 @@ class Hero {
   }
 
   resetHero() {
-    this.deck = cards.getDeck()
+    this.deck = cards.getDeck(this)
     this.initialHp = 20
     this.hp = this.initialHp
     this.mana = 0
     this.hand = []
     this.tableCard = []
     this.endGameTiredPoints = 1
-    this.manaPoints = 0
   }
 
   getCard() {
     if(!_.isEmpty(this.deck)) {
-      this.hand.push(this.deck.splice(-1, 1)[0])
+      this.hand.push({...this.deck.splice(-1, 1)[0], state: cards.STATE_IN_HAND})
     } else {
       this.hurt(this.endGameTiredPoints++)
     }
@@ -36,9 +35,10 @@ class Hero {
   }
 
   playCardOnTable(card) {
-    this.hand = this.hands.filter(v => v.id != card.id)
+    this.hand = this.hand.filter(v => v.id != card.id)
+    this.mana -= card.cost
     if(card.type == cards.TYPE_COMMON_SUPPORTER || card.type == cards.TYPE_SPECIAL_SUPPORTER) {
-      this.tableCard.push(card)
+      this.tableCard.push({...card, state: cards.STATE_ON_TABLE})
     }
 
     if(card.type == cards.TYPE_SPECIAL_SUPPORTER || card.type == cards.TYPE_SPELL) {
