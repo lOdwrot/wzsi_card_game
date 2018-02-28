@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import CardComponent from './Card'
 import * as table from '../game/Table.js'
 import * as cards from '../game/Cards.js'
+import {getPossibleTurns, getPossibleMoves} from '../boots/simulation.js'
 import _ from 'lodash'
 
 const rowContainer = {
@@ -14,7 +15,9 @@ const rowContainer = {
 export default class Table extends Component {
   constructor(props) {
     super(props)
-    this.state = {...table.getSyncData(), selectedCard: {}}
+    this.game = table.getVisualizedGameInstance()
+
+    this.state = {...this.game.getSyncData(), selectedCard: {}}
     this.refreshTableState = this.refreshTableState.bind(this)
     this.clickCard = this.clickCard.bind(this)
     this.clickTable = this.clickTable.bind(this)
@@ -23,7 +26,7 @@ export default class Table extends Component {
   }
 
   refreshTableState(additionalChanges = {}) {
-    this.setState({...this.state, ...table.getSyncData(), ...additionalChanges})
+    this.setState({...this.state, ...this.game.getSyncData(), ...additionalChanges})
   }
 
   render() {
@@ -46,13 +49,19 @@ export default class Table extends Component {
     return(
       <div>
         <button onClick={() => {
-          table.initGame()
+          this.game.initGame()
           this.refreshTableState({selectedCard: {}})
         }}>
           Init game
         </button>
         <button onClick={() => console.log(this.state)}>
           show state
+        </button>
+        <button onClick={() => console.log(getPossibleMoves(this.game.getCurrentPlayer(), this.game.getNotCurrentPlayer()))}>
+          Get Possible Moves
+        </button>
+        <button onClick={() => console.log(getPossibleTurns(this.game))}>
+          Get Possible Turns
         </button>
       </div>
     )
@@ -115,27 +124,27 @@ export default class Table extends Component {
     }else if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.id == card.id) {
       this.setState({...this.state, selectedCard: {}})
     }else if(!_.isEmpty(this.state.selectedCard) && card.state == cards.STATE_ON_TABLE) {
-      table.playCard(this.state.selectedCard, card)
+      this.game.playCard(this.state.selectedCard, card)
       this.refreshTableState({selectedCard: {}})
     }
   }
 
   clickTable() {
     if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.state == cards.STATE_IN_HAND) {
-      table.playCard(this.state.selectedCard, cards.PLACE_TABLE)
+      this.game.playCard(this.state.selectedCard, cards.PLACE_TABLE)
       this.refreshTableState({selectedCard: {}})
     }
   }
 
   clickHero(player) {
     if(!_.isEmpty(this.state.selectedCard) && this.state.selectedCard.state == cards.STATE_ON_TABLE) {
-      table.playCard(this.state.selectedCard, player)
+      this.game.playCard(this.state.selectedCard, player)
       this.refreshTableState({selectedCard: {}})
     }
   }
 
   endTurn() {
-    table.changePlayerTurn()
+    this.game.changePlayerTurn()
     this.refreshTableState({selectedCard: {}})
   }
 }
