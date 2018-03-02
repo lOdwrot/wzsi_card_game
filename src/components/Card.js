@@ -6,7 +6,7 @@ import {TYPE_COMMON_SUPPORTER, TYPE_SPECIAL_SUPPORTER} from '../game/Cards.js'
 export default class CardComponent extends Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {haveFocus: false}
   }
 
@@ -14,7 +14,7 @@ export default class CardComponent extends Component {
     return (
       <div
         onClick={() => {
-          console.log(this.props.card)
+          console.log(this.props.card);
           this.props.clickAction ? this.props.clickAction() : console.log('No on click action defined')
         }}
         style={{
