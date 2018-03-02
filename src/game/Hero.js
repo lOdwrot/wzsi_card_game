@@ -3,8 +3,8 @@ import _ from 'lodash'
 
 class Hero {
   constructor(heroName, controlType = 'player') {
-    this.name = heroName
-    this.setControlType(controlType)
+    this.name = heroName;
+    this.setControlType(controlType);
     this.resetHero()
   }
 
@@ -13,13 +13,13 @@ class Hero {
   }
 
   resetHero() {
-    this.deck = cards.getDeck(this)
-    this.initialHp = 20
-    this.hp = this.initialHp
-    this.attack = 0
-    this.mana = 0
-    this.hand = []
-    this.tableCard = []
+    this.deck = cards.getDeck(this);
+    this.initialHp = 20;
+    this.hp = this.initialHp;
+    this.attack = 0;
+    this.mana = 0;
+    this.hand = [];
+    this.tableCard = [];
     this.endGameTiredPoints = 1
   }
 
@@ -32,14 +32,14 @@ class Hero {
   }
 
   hurt(damage) {
-    this.hp -= damage
+    this.hp -= damage;
     if(this.hp < 0) console.log(this.name + ' defeated!')
   }
 
   playCardOnTable(card) {
-    this.hand = this.hand.filter(v => v.id != card.id)
-    this.mana -= card.cost
-    if(card.type == cards.TYPE_COMMON_SUPPORTER || card.type == cards.TYPE_SPECIAL_SUPPORTER) {
+    this.hand = this.hand.filter(v => v.id !== card.id);
+    this.mana -= card.cost;
+    if(card.type === cards.TYPE_COMMON_SUPPORTER || card.type === cards.TYPE_SPECIAL_SUPPORTER) {
       this.tableCard.push({...card, state: cards.STATE_ON_TABLE})
     }
   }
@@ -49,7 +49,7 @@ class Hero {
   }
 
   initTurn() {
-    this.getCard()
+    this.getCard();
     this.tableCard.forEach(v => v.attackReady = true)
   }
 }
