@@ -17,7 +17,7 @@ export const MODIFY_STATS = 'modifyStats';
 export const GIVE_EFFECT = 'giveEffect';
 export const ATTACK_TWICE = 'attackTwice';
 
-//modifie stats types
+//modify stats types
 export const INCREASE = 'increase';
 export const SET = 'set';
 
@@ -33,11 +33,11 @@ export const ENEMY_HERO = 'ENEMY_HERO';
 //put places
 export const PLACE_TABLE = 'PLACE_TABLE';
 export const PLACE_MY_SUPPORTER = 'PLACE_MY_SUPPORTER';
-export const PLACE_ENEMY_SUPPORTET = 'PLACE_ENEMY_SUPPORTET';
+export const PLACE_ENEMY_SUPPORTER = 'PLACE_ENEMY_SUPPORTER';
 
 
 const commonSupporters = {
-    murlocScout : {
+    murlocScout: {
         type: TYPE_COMMON_SUPPORTER,
         name: 'Murloc Scout',
         hp: 1,
@@ -47,7 +47,7 @@ const commonSupporters = {
         infoLink: 'https://www.hearthpwn.com/cards/486-murloc-scout',
         effects: []
     },
-    flameofAzzinoth : {
+    flameOfAzzinoth: {
         type: TYPE_COMMON_SUPPORTER,
         name: 'Flame of Azzinoth',
         hp: 1,
@@ -57,7 +57,7 @@ const commonSupporters = {
         infoLink: 'https://www.hearthpwn.com/cards/455-flame-of-azzinoth',
         effects: []
     },
-    spiderTank : {
+    spiderTank: {
         type: TYPE_COMMON_SUPPORTER,
         name: 'Spider Tank',
         hp: 4,
@@ -67,7 +67,7 @@ const commonSupporters = {
         infoLink: 'https://www.hearthpwn.com/cards/12184-spider-tank',
         effects: []
     },
-    carrionGrub : {
+    carrionGrub: {
         type: TYPE_COMMON_SUPPORTER,
         name: 'Carrion Grub',
         hp: 5,
@@ -77,7 +77,7 @@ const commonSupporters = {
         infoLink: 'https://www.hearthpwn.com/cards/35218-carrion-grub',
         effects: []
     },
-    brewmaster : {
+    brewmaster: {
         type: TYPE_COMMON_SUPPORTER,
         name: 'Brewmaster',
         hp: 4,
@@ -90,7 +90,7 @@ const commonSupporters = {
 };
 
 const specialSupporters = {
-    scarletCrusader : {
+    scarletCrusader: {
         type: TYPE_SPECIAL_SUPPORTER,
         name: 'Scarlet Crusader',
         hp: 1,
@@ -100,7 +100,7 @@ const specialSupporters = {
         infoLink: 'https://www.hearthpwn.com/cards/475-scarlet-crusader',
         effects: [ONE_TIME_SHIELD]
     },
-    nightblade : {
+    nightblade: {
         type: TYPE_SPECIAL_SUPPORTER,
         name: 'Nightblade',
         hp: 4,
@@ -120,7 +120,7 @@ const specialSupporters = {
 };
 
 const spells = {
-    sealofChampions : {
+    sealOfChampions: {
         type: TYPE_SPELL,
         availablePlace: PLACE_MY_SUPPORTER,
         name: 'Seal of Champions',
@@ -135,7 +135,7 @@ const spells = {
             }
         }
     },
-    sugglerRun : {
+    sugglerRun: {
         type: TYPE_SPELL,
         availablePlace: PLACE_TABLE,
         name: 'Smuggler Run',
@@ -152,7 +152,7 @@ const spells = {
             }
         }
     },
-    arcaneExplosion : {
+    arcaneExplosion: {
         type: TYPE_SPELL,
         availablePlace: PLACE_TABLE,
         name: 'Arcane Explosion',
@@ -171,16 +171,16 @@ const spells = {
 };
 
 const deck = {
-  murlocScout: 2,
-  flameofAzzinoth: 2,
-  spiderTank: 2,
-  carrionGrub: 2,
-  brewmaster: 2,
-  scarletCrusader: 2,
-  nightblade: 2,
-  sealofChampions: 2,
-  sugglerRun: 2,
-  arcaneExplosion: 2
+    murlocScout: 2,
+    flameOfAzzinoth: 2,
+    spiderTank: 2,
+    carrionGrub: 2,
+    brewmaster: 2,
+    scarletCrusader: 2,
+    nightblade: 2,
+    sealOfChampions: 2,
+    sugglerRun: 2,
+    arcaneExplosion: 2
 };
 
 export const getAllCards = () => ({...commonSupporters, ...specialSupporters, ...spells});
@@ -188,14 +188,20 @@ export const getSpells = () => ({...spells});
 export const getSupporters = () => ({...commonSupporters});
 export const getSpecialSupporters = () => ({...specialSupporters});
 
-var idIterator = 1;
+let idIterator = 1;
 
 export const getDeck = (player = {}) => {
-  let result = [];
-  let availableCards = getAllCards();
-  _.forOwn(deck , (v, key) => {
-    for(let i = 0; i < v; i++) result.push({...availableCards[key], id: idIterator++, ownerName: player.name, state: STATE_IN_DECK, attackReady: false})
-  });
+    let result = [];
+    let availableCards = getAllCards();
+    _.forOwn(deck, (v, key) => {
+        for (let i = 0; i < v; i++) result.push({
+            ...availableCards[key],
+            id: idIterator++,
+            ownerName: player.name,
+            state: STATE_IN_DECK,
+            attackReady: false
+        })
+    });
 
-  return _.shuffle(result)
+    return _.shuffle(result)
 };

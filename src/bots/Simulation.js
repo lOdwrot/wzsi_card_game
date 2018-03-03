@@ -28,20 +28,20 @@ export const getPossibleMoves = (player, opponent) => {
     };
     //check all possible putting card
     player.hero.handCards.forEach(v => {
-        if(v.cost <= player.hero.mana) {
-            if(v.type === cards.TYPE_COMMON_SUPPORTER || v.type === cards.TYPE_SPECIAL_SUPPORTER) {
+        if (v.cost <= player.hero.mana) {
+            if (v.type === cards.TYPE_COMMON_SUPPORTER || v.type === cards.TYPE_SPECIAL_SUPPORTER) {
                 result.onTable.push({
                     source: v,
                     target: cards.PLACE_TABLE,
                 })
             }
-            else if(v.type === cards.TYPE_SPELL) {
-                if(v.availablePlace === cards.PLACE_TABLE) {
+            else if (v.type === cards.TYPE_SPELL) {
+                if (v.availablePlace === cards.PLACE_TABLE) {
                     result.onTable.push({
                         source: v,
                         target: cards.PLACE_TABLE,
                     })
-                }else if(v.special.target === cards.PLACE_MY_SUPPORTER) {
+                } else if (v.special.target === cards.PLACE_MY_SUPPORTER) {
                     player.hero.tableCards.forEach(tCard => {
                         result.onTable.push({
                             source: v,
@@ -55,7 +55,7 @@ export const getPossibleMoves = (player, opponent) => {
 
     //check all possible attacks
     player.hero.tableCards.forEach(v => {
-        if(v.attackReady) {
+        if (v.attackReady) {
             result.attacks.push({
                 source: v,
                 target: opponent.hero
