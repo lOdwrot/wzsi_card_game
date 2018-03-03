@@ -1,6 +1,7 @@
 import * as cards from '../game/Cards.js'
 import _ from 'lodash'
 
+
 export const getPossibleTurns = (game) => {
     let nTurns = getPossibleMoves(game.getCurrentPlayer(), game.getNotCurrentPlayer());
     let allTurns = nTurns;
@@ -25,8 +26,8 @@ export const getPossibleMoves = (player, opponent) => {
         attacks: [],
         onTable: []
     };
-    //check all possible puting card
-    player.hero.hand.forEach(v => {
+    //check all possible putting card
+    player.hero.handCards.forEach(v => {
         if(v.cost <= player.hero.mana) {
             if(v.type === cards.TYPE_COMMON_SUPPORTER || v.type === cards.TYPE_SPECIAL_SUPPORTER) {
                 result.onTable.push({
@@ -41,7 +42,7 @@ export const getPossibleMoves = (player, opponent) => {
                         target: cards.PLACE_TABLE,
                     })
                 }else if(v.special.target === cards.PLACE_MY_SUPPORTER) {
-                    player.hero.tableCard.forEach(tCard => {
+                    player.hero.tableCards.forEach(tCard => {
                         result.onTable.push({
                             source: v,
                             target: tCard
@@ -53,13 +54,13 @@ export const getPossibleMoves = (player, opponent) => {
     });
 
     //check all possible attacks
-    player.hero.tableCard.forEach(v => {
+    player.hero.tableCards.forEach(v => {
         if(v.attackReady) {
             result.attacks.push({
                 source: v,
                 target: opponent.hero
             });
-            opponent.hero.tableCard.forEach(oppCard => {
+            opponent.hero.tableCards.forEach(oppCard => {
                 result.attacks.push({
                     source: v,
                     target: oppCard

@@ -72,7 +72,7 @@ export default class Table extends Component {
       <div>
         {`Player hand: ${player.name}`}
         <div style={rowContainer}>
-          {player.hero.hand.map(v =>
+          {player.hero.handCards.map(v =>
             <CardComponent
               card={v}
               key={v.id}
@@ -88,7 +88,7 @@ export default class Table extends Component {
       <div>
         {`Player Table: ${player.name}`}
         <div style={rowContainer}>
-          {player.hero.tableCard.map(v =>
+          {player.hero.tableCards.map(v =>
             <CardComponent
               card={v}
               key={v.id}
