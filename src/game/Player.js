@@ -1,10 +1,12 @@
 import Hero from "./Hero";
 import RandomSimulation from '../bots/RandomSimulation'
 import AggressiveSimulation from '../bots/AggressiveSimulation'
+import TableControlSimulation from '../bots/TableControlSimulation'
 
 export const MANUAL_PLAYER = 'manual';
 export const RANDOM_PLAYER = 'random';
 export const AGGRESSIVE_PLAYER = 'aggressive';
+export const TABLE_CONTROL_PLAYER = 'control';
 
 let cardsStats = (cards) => {
     let hp = 0, attack = 0, count = 0;
@@ -13,7 +15,7 @@ let cardsStats = (cards) => {
         attack += card.attack;
         count++;
     });
-    return { hp: hp, attack: attack, count: count };
+    return {hp: hp, attack: attack, count: count};
 };
 
 class Player {
@@ -25,13 +27,15 @@ class Player {
     }
 
     getSimulation() {
-        switch(this.type) {
+        switch (this.type) {
             case MANUAL_PLAYER:
                 return null;
             case RANDOM_PLAYER:
                 return new RandomSimulation(this);
             case AGGRESSIVE_PLAYER:
                 return new AggressiveSimulation(this);
+            case TABLE_CONTROL_PLAYER:
+                return new TableControlSimulation(this);
             default:
                 console.error("No such player type: " + this.type);
                 return null;
@@ -39,7 +43,7 @@ class Player {
     }
 
     playTurn(game) {
-        if(this.simulation !== null) {
+        if (this.simulation !== null) {
             this.simulation.playTurn(game);
         }
     }
