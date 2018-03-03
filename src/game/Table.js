@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import * as cards from './Cards.js'
-import Player from "./Player";
+import Player, {AGGRESSIVE_PLAYER, RANDOM_PLAYER} from "./Player";
 
 const INITIAL_CARDS = 4;
 const MAX_MANA = 10;
@@ -9,13 +9,14 @@ export const TARGET_TABLE = 'TARGET_TABLE';
 export const TARGET_HERO = 'TARGET_HERO';
 export const TARGET_CARD = 'TARGET_CARD';
 
+const PLAYER1_TYPE = RANDOM_PLAYER;
+const PLAYER2_TYPE = AGGRESSIVE_PLAYER;
+
 var visualizedGameInstance = null;
 
 export const getVisualizedGameInstance = () => {
   if(visualizedGameInstance === null) {
-    visualizedGameInstance = new Game();
-    visualizedGameInstance.player1 = new Player('P1', 'random');
-    visualizedGameInstance.player2 = new Player('P2', 'manual');
+    visualizedGameInstance = new Game(['P1', 'P2'], [PLAYER1_TYPE, PLAYER2_TYPE]);
   }
 
   return visualizedGameInstance
@@ -27,16 +28,16 @@ export const forceChangeVisualizedGameInstance = (nGame) => {
 
 export class Game {
   //Outside methods
-    constructor() {
+    constructor(names, types) {
+        this.player1 = new Player(names[0], types[0]);
+        this.player2 = new Player(names[1], types[1]);
         this.manaCounter = 0;
     }
 
-  initGame() {
-    if(this.player1 === null) {
-      this.player1 = new Player('P1', 'random');
-    }
-    if(this.player2 === null) {
-      this.player2 = new Player('P2', 'manual');
+  initGame(names, types) {
+    if (names && names.length === 2 && types && types.length === 2) {
+        this.player1 = new Player(names[0], types[0]);
+        this.player2 = new Player(names[1], types[1]);
     }
 
     this.manaCounter = 0;
@@ -48,21 +49,26 @@ export class Game {
 
     this.startPlayerName = this.player1.name;
     this.setPlayerTurn(this.player1);
-    this.currentPlayer.playTurn();
+    this.currentPlayer.playTurn(this);
   }
 
+  isGameOver() {
+      return (this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0)
+  }
+
+
   changePlayerTurn() {
-    if(this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0) {
+    if(this.isGameOver()) {
       return console.log('Game finished');
     }
 
     this.setPlayerTurn(this.currentPlayer.name === this.player1.name ? this.player2 : this.player1);
     this.currentPlayer.initTurn();
-    this.currentPlayer.playTurn();
+    this.currentPlayer.playTurn(this);
   }
 
   playCard(source, target) {
-    if(this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0) {
+    if(this.isGameOver()) {
       return console.log('Game finished');
     }
 
@@ -117,6 +123,19 @@ export class Game {
             this.player2 : this.player1
   }
 
+  getStatsCurrent() {
+      return {
+        currentPlayer: this.currentPlayer.getStats(),
+        opponent: this.getNotCurrentPlayer().getStats()
+      }
+  }
+
+  getStatsAfter(move) {
+      let nextGame = _.cloneDeep(this);
+      nextGame.playCard(move.source, move.target);
+      return nextGame.getStatsCurrent();
+  }
+
   getSyncData() {
     return this
   }
@@ -136,10 +155,10 @@ export class Game {
   useSpell(special, target, source) {
     let targets;
     let specification = special.specification;
-    if(special.target === cards.ALL_IN_HAND_SUPPORTERS) targets = this.currentPlayer.hero.hand;
-    if(special.target === cards.ALL_ENEMY_SUPPORTERS) targets = this.currentPlayer.name !== this.player1.name ? this.player1.hero.tableCard : this.player2.hero.tableCard;
+    if(special.target === cards.ALL_IN_HAND_SUPPORTERS) targets = this.currentPlayer.hero.handCards;
+    if(special.target === cards.ALL_ENEMY_SUPPORTERS) targets = this.getNotCurrentPlayer().hero.tableCards;
     if(special.target === cards.SELECTED_ALLY_SUPPORTER) targets = [target];
-    if(special.target === cards.ENEMY_HERO) targets = this.currentPlayer.name !== this.player1.name ? [this.player1.hero] : [this.player2.hero];
+    if(special.target === cards.ENEMY_HERO) targets = [this.getNotCurrentPlayer().hero];
 
     targets.forEach(v => {
       if(special.type === cards.MODIFY_STATS) {
