@@ -35,6 +35,7 @@ export class Game {
     }
 
     initGame(names, types) {
+        this.winner = null
         if (names && names.length === 2 && types && types.length === 2) {
             this.player1 = new Player(names[0], types[0]);
             this.player2 = new Player(names[1], types[1]);
@@ -53,6 +54,8 @@ export class Game {
     }
 
     isGameOver() {
+        if(this.player1.hero.hp <= 0) this.winner = this.player2
+        if(this.player2.hero.hp <= 0) this.winner = this.player1
         return (this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0)
     }
 
@@ -67,16 +70,16 @@ export class Game {
         this.currentPlayer.playTurn(this);
     }
 
-    findAndPlay(source, traget) {
+    findAndPlay(source, target) {
         this.playCard(
             this.findRef(source),
-            this.findRef(traget)
+            this.findRef(target)
         )
     }
 
     findRef(obj) {
         if(typeof obj == 'string') return obj
-        if(obj.type == 'hero') return obj.name == this.player1.name ? this.player2 : this.player1
+        if(obj.type == 'hero') return obj.name == this.player1.hero.name ? this.player1.hero : this.player2.hero
         return this.player1.hero.findCardById(obj.id) || this.player2.hero.findCardById(obj.id)
     }
 

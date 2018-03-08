@@ -171,16 +171,16 @@ const spells = {
 };
 
 const deck = {
-    murlocScout: 2,
-    flameOfAzzinoth: 2,
-    spiderTank: 2,
-    carrionGrub: 2,
-    brewmaster: 2,
-    scarletCrusader: 2,
-    nightblade: 2,
-    sealOfChampions: 2,
-    sugglerRun: 2,
-    arcaneExplosion: 2
+    // murlocScout: 2,
+    flameOfAzzinoth: 1,
+    // spiderTank: 2,
+    // carrionGrub: 2,
+    // brewmaster: 2,
+    // scarletCrusader: 2,
+    // nightblade: 2,
+    // sealOfChampions: 2,
+    // sugglerRun: 2,
+    // arcaneExplosion: 2
 };
 
 export const getAllCards = () => ({...commonSupporters, ...specialSupporters, ...spells});
@@ -188,7 +188,7 @@ export const getSpells = () => ({...spells});
 export const getSupporters = () => ({...commonSupporters});
 export const getSpecialSupporters = () => ({...specialSupporters});
 
-let idIterator = 1;
+var idIterator = 1;
 
 export const getDeck = (player = {}) => {
     let result = [];
