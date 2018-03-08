@@ -3,6 +3,7 @@ import _ from 'lodash'
 
 class Hero {
     constructor(heroName, controlType = 'player') {
+        this.type = 'hero'
         this.name = heroName;
         this.setControlType(controlType);
         this.resetHero()
@@ -21,6 +22,10 @@ class Hero {
         this.handCards = [];
         this.tableCards = [];
         this.endGameTiredPoints = 1
+    }
+
+    findCardById(cardId) {
+        return this.handCards.find(v => v.id == cardId) || this.tableCards.find(v => v.id == cardId)
     }
 
     getCard() {

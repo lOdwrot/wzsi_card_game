@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import * as cards from './Cards.js'
-import Player, {AGGRESSIVE_PLAYER, RANDOM_PLAYER, TABLE_CONTROL_PLAYER} from "./Player";
+import Player, {AGGRESSIVE_PLAYER, RANDOM_PLAYER, TABLE_CONTROL_PLAYER, MANUAL_PLAYER} from "./Player";
 
 const INITIAL_CARDS = 4;
 const MAX_MANA = 10;
@@ -16,7 +16,7 @@ let visualizedGameInstance = null;
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [PLAYER1_TYPE, PLAYER2_TYPE]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [MANUAL_PLAYER, MANUAL_PLAYER]);
     }
 
     return visualizedGameInstance
@@ -65,6 +65,19 @@ export class Game {
         this.setPlayerTurn(this.currentPlayer.name === this.player1.name ? this.player2 : this.player1);
         this.currentPlayer.initTurn();
         this.currentPlayer.playTurn(this);
+    }
+
+    findAndPlay(source, traget) {
+        this.playCard(
+            this.findRef(source),
+            this.findRef(traget)
+        )
+    }
+
+    findRef(obj) {
+        if(typeof obj == 'string') return obj
+        if(obj.type == 'hero') return obj.name == this.player1.name ? this.player2 : this.player1
+        return this.player1.hero.findCardById(obj.id) || this.player2.hero.findCardById(obj.id)
     }
 
     playCard(source, target) {

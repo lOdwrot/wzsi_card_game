@@ -10,7 +10,7 @@ export const getPossibleTurns = (game) => {
     let digPossibilities = (startState, possibleMoves) => {
         [...possibleMoves.attacks, ...possibleMoves.onTable].forEach(move => {
             let nGame = _.cloneDeep(startState);
-            nGame.playCard(move.source, move.target);
+            nGame.findAndPlay(move.source, move.target);
             nStates.push(nGame);
             digPossibilities(nGame, getPossibleMoves(nGame.getCurrentPlayer(), nGame.getNotCurrentPlayer()))
         })
