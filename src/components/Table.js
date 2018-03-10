@@ -3,6 +3,7 @@ import CardComponent from './Card'
 import * as table from '../game/Table.js'
 import * as cards from '../game/Cards.js'
 import {getPossibleTurns, getPossibleMoves} from '../bots/Simulation.js'
+import {getRandomPlayoutWinner} from '../bots/MonteCarlo.js'
 import _ from 'lodash'
 
 const rowContainer = {
@@ -17,12 +18,15 @@ export default class Table extends Component {
         super(props);
         this.game = table.getVisualizedGameInstance();
 
+
         this.state = {...this.game.getSyncData(), selectedCard: {}};
         this.refreshTableState = this.refreshTableState.bind(this);
         this.clickCard = this.clickCard.bind(this);
         this.clickTable = this.clickTable.bind(this);
         this.endTurn = this.endTurn.bind(this);
         this.clickHero = this.clickHero.bind(this)
+
+        table.setVisualizationListener(this.refreshTableState)
     }
 
     refreshTableState(additionalChanges = {}) {
@@ -38,6 +42,7 @@ export default class Table extends Component {
                 {this.renderTableCards(this.state.player1)}
                 <button onClick={() => this.clickTable()}>Put on table</button>
                 <button onClick={() => this.endTurn()}>End Turn</button>
+                <button onClick={() => console.log(getRandomPlayoutWinner(_.cloneDeep(this.game)))}>Check random playout</button>
                 {this.renderTableCards(this.state.player2)}
                 {this.renderPlayerHand(this.state.player2)}
                 {this.renderPlayerInfo(this.state.player2)}

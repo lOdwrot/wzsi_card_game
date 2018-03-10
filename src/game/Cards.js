@@ -171,8 +171,8 @@ const spells = {
 };
 
 const deck = {
-    // murlocScout: 2,
-    flameOfAzzinoth: 1,
+    murlocScout: 2,
+    flameOfAzzinoth: 2,
     // spiderTank: 2,
     // carrionGrub: 2,
     // brewmaster: 2,

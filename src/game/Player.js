@@ -2,9 +2,11 @@ import Hero from "./Hero";
 import RandomSimulation from '../bots/RandomSimulation'
 import AggressiveSimulation from '../bots/AggressiveSimulation'
 import TableControlSimulation from '../bots/TableControlSimulation'
+import MonteCarlo from '../bots/MonteCarlo'
 
 export const MANUAL_PLAYER = 'manual';
 export const RANDOM_PLAYER = 'random';
+export const MONTE_CARLO = 'monteCarlo';
 export const AGGRESSIVE_PLAYER = 'aggressive';
 export const TABLE_CONTROL_PLAYER = 'control';
 
@@ -22,8 +24,12 @@ class Player {
     constructor(name, type) {
         this.hero = new Hero(name);
         this.name = this.hero.name;
-        this.type = type;
-        this.simulation = this.getSimulation();
+        this.setType(type)
+    }
+
+    setType(type) {
+      this.type = type;
+      this.simulation = this.getSimulation();
     }
 
     getSimulation() {
@@ -36,6 +42,8 @@ class Player {
                 return new AggressiveSimulation(this);
             case TABLE_CONTROL_PLAYER:
                 return new TableControlSimulation(this);
+            case MONTE_CARLO:
+                return new MonteCarlo(this);
             default:
                 console.error("No such player type: " + this.type);
                 return null;

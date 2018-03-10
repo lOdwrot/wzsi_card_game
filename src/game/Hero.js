@@ -30,8 +30,12 @@ class Hero {
 
     getCard() {
         if (!_.isEmpty(this.deck)) {
+            //every time get random card (to simulation)
+            this.deck = _.shuffle(this.deck)
             this.handCards.push({...this.deck.splice(-1, 1)[0], state: cards.STATE_IN_HAND})
+            this.handCards = this.handCards.sort((a1,a2) => a1.name < a2.name ? 1 : -1)
         } else {
+            // this.hurt(this.endGameTiredPoints++)
             this.hurt(this.endGameTiredPoints++)
         }
     }
@@ -46,6 +50,7 @@ class Hero {
         this.mana -= card.cost;
         if (card.type === cards.TYPE_COMMON_SUPPORTER || card.type === cards.TYPE_SPECIAL_SUPPORTER) {
             this.tableCards.push({...card, state: cards.STATE_ON_TABLE})
+            this.tableCards = this.tableCards.sort((a1,a2) => a1.name < a2.name ? 1 : -1)
         }
     }
 

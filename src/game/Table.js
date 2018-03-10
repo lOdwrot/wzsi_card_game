@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import * as cards from './Cards.js'
-import Player, {AGGRESSIVE_PLAYER, RANDOM_PLAYER, TABLE_CONTROL_PLAYER, MANUAL_PLAYER} from "./Player";
+import Player, {AGGRESSIVE_PLAYER, RANDOM_PLAYER, TABLE_CONTROL_PLAYER, MANUAL_PLAYER, MONTE_CARLO} from "./Player";
 
 const INITIAL_CARDS = 4;
 const MAX_MANA = 10;
@@ -12,19 +12,27 @@ export const TARGET_CARD = 'TARGET_CARD';
 const PLAYER1_TYPE = TABLE_CONTROL_PLAYER;
 const PLAYER2_TYPE = AGGRESSIVE_PLAYER;
 
-let visualizedGameInstance = null;
+var visualizedGameInstance = null;
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [MANUAL_PLAYER, MANUAL_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [MONTE_CARLO, MANUAL_PLAYER]);
     }
 
     return visualizedGameInstance
 };
 
+var listenerFunction
+
+export const setVisualizationListener = (listenFun) => {
+    listenerFunction = listenFun
+};
+
 export const forceChangeVisualizedGameInstance = (nGame) => {
     visualizedGameInstance = {...visualizedGameInstance, ...nGame}
 };
+
+
 
 export class Game {
     //Outside methods
@@ -32,16 +40,25 @@ export class Game {
         this.player1 = new Player(names[0], types[0]);
         this.player2 = new Player(names[1], types[1]);
         this.manaCounter = 0;
+        this.gameHistory = []
+    }
+
+    playRandom() {
+        this.player1.setType(RANDOM_PLAYER)
+        this.player2.setType(RANDOM_PLAYER)
+        this.changePlayerTurn()
     }
 
     initGame(names, types) {
         this.winner = null
+        this.gameHistory = []
+        this.manaCounter = 0;
+
         if (names && names.length === 2 && types && types.length === 2) {
             this.player1 = new Player(names[0], types[0]);
             this.player2 = new Player(names[1], types[1]);
         }
 
-        this.manaCounter = 0;
         let players = [this.player1, this.player2];
         players.forEach((player, index) => {
             player.hero.resetHero();
@@ -56,18 +73,39 @@ export class Game {
     isGameOver() {
         if(this.player1.hero.hp <= 0) this.winner = this.player2
         if(this.player2.hero.hp <= 0) this.winner = this.player1
-        return (this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0)
+        if(this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0) {
+            if(this.gameEndListener) this.gameEndListener.notifyEnd()
+            return true
+        }
+        return false
     }
 
 
-    changePlayerTurn() {
+    changePlayerTurn(ignorePlay = false) {
+        if(listenerFunction && this ==  visualizedGameInstance) listenerFunction()
         if (this.isGameOver()) {
-            return console.log('Game finished');
+            return console.log('Game finished, can not change turn');
         }
 
         this.setPlayerTurn(this.currentPlayer.name === this.player1.name ? this.player2 : this.player1);
         this.currentPlayer.initTurn();
-        this.currentPlayer.playTurn(this);
+        if(!ignorePlay) this.currentPlayer.playTurn(this);
+    }
+
+    addLogToHistory() {
+        this.gameHistory.push({
+            type: 'info',
+            message: 'Switched turn to player ' + this.currentPlayer.name
+        })
+
+        this.gameHistory.push({
+            type: 'turn',
+            moves: []
+        })
+    }
+
+    addMoveToHistory(move) {
+        this.gameHistory.slice(-1)[0].moves.push(move)
     }
 
     findAndPlay(source, target) {
@@ -85,7 +123,7 @@ export class Game {
 
     playCard(source, target) {
         if (this.isGameOver()) {
-            return console.log('Game finished');
+            return console.log('Game finished, can not play card');
         }
 
         //validate move
@@ -100,7 +138,7 @@ export class Game {
             }
         }
 
-        if (target === cards.PLACE_TABLE && source.cost > this.currentPlayer.hero.mana) {
+        if (source.state === cards.STATE_IN_HAND && source.cost > this.currentPlayer.hero.mana) {
             return console.log(`Not enough mana points ${source.cost} / ${this.currentPlayer.hero.mana}`)
         }
 
@@ -115,19 +153,24 @@ export class Game {
             } else if (source.type === cards.TYPE_SPELL) {
                 this.useSpell(source.special, target, source)
             }
-            return
+        } else if (typeof source !== 'object' || typeof target !== 'object') {
+            console.log(source)
+            console.log(target)
+            return console.log('Invalid target')
         }
-
-
-        if (typeof source !== 'object' || typeof target !== 'object') return console.log('Invalid target');
 
         if (source.state === cards.STATE_ON_TABLE &&
             [cards.TYPE_COMMON_SUPPORTER, cards.TYPE_SPECIAL_SUPPORTER].includes(source.type) &&
             target.ownerName !== this.currentPlayer.name
         ) {
             if (source.attackReady) this.fight(source, target);
-            else console.log('Not ready for attack')
+            else return console.log('Not ready for attack')
         }
+
+        this.addMoveToHistory({
+            source: source,
+            target: target
+        })
     }
 
     getCurrentPlayer() {
@@ -159,11 +202,11 @@ export class Game {
     //inner methods
     setPlayerTurn(player) {
         this.currentPlayer = player;
-        console.log("Player " + player.name + " turn starts");
         if (this.currentPlayer.name === this.startPlayerName && this.manaCounter < MAX_MANA) {
             this.manaCounter++
         }
         this.currentPlayer.hero.mana = this.manaCounter
+        this.addLogToHistory()
     }
 
 
@@ -183,6 +226,7 @@ export class Game {
                     if (specification.attack) v.attack += specification.attack
                 }
             } else if (special.type === cards.GIVE_EFFECT) {
+                if(!target.effects) target.effects
                 target.effects.push(specification.effect)
             }
         });
