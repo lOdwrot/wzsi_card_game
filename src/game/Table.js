@@ -14,16 +14,18 @@ const PLAYER2_TYPE = AGGRESSIVE_PLAYER;
 
 var visualizedGameInstance = null;
 
-const isResearchMode = false
+const isResearchMode = true
 
 function* nextTestPair() {
   //set repeats per pair
-  let repeatsPerPair = 5
+  let repeatsPerPair = 10
 
   //add players you want to
   let pairsTesed = [
-    {p1: AGGRESSIVE_PLAYER, p2: RANDOM_PLAYER},
-    {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
+    // {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
+    {p1: RANDOM_PLAYER, p2: AGGRESSIVE_PLAYER},
+    // {p1: AGGRESSIVE_PLAYER, p2: RANDOM_PLAYER},
+    // {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
   ]
   for(let i in pairsTesed) {
     for(let r = 0; r < repeatsPerPair; r++) {
@@ -37,7 +39,7 @@ const pairGen = nextTestPair()
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [RANDOM_PLAYER, AGGRESSIVE_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [RANDOM_PLAYER, RANDOM_PLAYER]);
     }
 
     return visualizedGameInstance
@@ -72,7 +74,7 @@ export class Game {
     }
 
     initGame(names, types) {
-        if(isResearchMode && !this.hasStarted) {
+        if(isResearchMode && !this.hasStarted && this == visualizedGameInstance) {
           if(this.gameHistory) this.gameHistory = []
           this.hasStarted = true
           this.runNextSimulation()
@@ -97,11 +99,13 @@ export class Game {
         this.currentPlayer.playTurn(this);
     }
 
-    isGameOver() {
+    isGameOver(notify=true) {
         if(this.player1.hero.hp <= 0) this.winner = this.player2
         if(this.player2.hero.hp <= 0) this.winner = this.player1
         if(this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0) {
-            if(isResearchMode) this.notifySimulationEnd()
+            if(isResearchMode) {
+              if(notify && this == visualizedGameInstance) this.notifySimulationEnd()
+            }
             return true
         }
         return false
@@ -216,7 +220,8 @@ export class Game {
       let nextGenState = pairGen.next()
       if(!nextGenState.done) {
         this.player1.setType(nextGenState.value.p1)
-        this.player1.setType(nextGenState.value.p2)
+        this.player2.setType(nextGenState.value.p2)
+        console.log('Next spare: ' + `${this.player1.type}-${this.player2.type}`)
         this.initGame()
       } else {
         console.log('All simulations finished. You can check results above or by typing window.stats')

@@ -173,14 +173,14 @@ const spells = {
 const deck = {
     murlocScout: 2,
     flameOfAzzinoth: 2,
-    // spiderTank: 2,
-    // carrionGrub: 2,
-    // brewmaster: 2,
-    // scarletCrusader: 2,
-    // nightblade: 2,
-    // sealOfChampions: 2,
-    // sugglerRun: 2,
-    // arcaneExplosion: 2
+    spiderTank: 2,
+    carrionGrub: 2,
+    brewmaster: 2,
+    scarletCrusader: 2,
+    nightblade: 2,
+    sealOfChampions: 2,
+    sugglerRun: 2,
+    arcaneExplosion: 2
 };
 
 export const getAllCards = () => ({...commonSupporters, ...specialSupporters, ...spells});
