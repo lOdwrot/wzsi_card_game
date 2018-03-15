@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 const cParam = 1
 const randomSimulationRepeats = 5
-const timeLilit = 3 * 1000
+const timeLilit = 1 * 1000
 
 export default class MonteCarloSimulation {
     constructor(player) {
@@ -35,7 +35,6 @@ export default class MonteCarloSimulation {
             })
         }
 
-        debugger
         console.log('# end turn #')
         game.changePlayerTurn()
     }
@@ -102,9 +101,9 @@ class Node {
         let mWins = 0
         let mLost = 0
         for(let i = 0; i < repeats; i++) {
-            console.log('@@@ Random game started @@@')
+            // console.log('@@@ Random game started @@@')
             let winnerName = getRandomPlayoutWinner(this.gameState).name
-            console.log('@@@ Random game finished @@@')
+            // console.log('@@@ Random game finished @@@')
 
             if(winnerName == player.name) mWins++
             else mLost++

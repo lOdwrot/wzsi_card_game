@@ -14,9 +14,30 @@ const PLAYER2_TYPE = AGGRESSIVE_PLAYER;
 
 var visualizedGameInstance = null;
 
+const isResearchMode = false
+
+function* nextTestPair() {
+  //set repeats per pair
+  let repeatsPerPair = 5
+
+  //add players you want to
+  let pairsTesed = [
+    {p1: AGGRESSIVE_PLAYER, p2: RANDOM_PLAYER},
+    {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
+  ]
+  for(let i in pairsTesed) {
+    for(let r = 0; r < repeatsPerPair; r++) {
+      yield pairsTesed[i]
+    }
+  }
+
+}
+
+const pairGen = nextTestPair()
+
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [MONTE_CARLO, MANUAL_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [RANDOM_PLAYER, AGGRESSIVE_PLAYER]);
     }
 
     return visualizedGameInstance
@@ -41,6 +62,7 @@ export class Game {
         this.player2 = new Player(names[1], types[1]);
         this.manaCounter = 0;
         this.gameHistory = []
+        this.hasStarted = false
     }
 
     playRandom() {
@@ -50,6 +72,11 @@ export class Game {
     }
 
     initGame(names, types) {
+        if(isResearchMode && !this.hasStarted) {
+          if(this.gameHistory) this.gameHistory = []
+          this.hasStarted = true
+          this.runNextSimulation()
+        }
         this.winner = null
         this.gameHistory = []
         this.manaCounter = 0;
@@ -74,7 +101,7 @@ export class Game {
         if(this.player1.hero.hp <= 0) this.winner = this.player2
         if(this.player2.hero.hp <= 0) this.winner = this.player1
         if(this.player1.hero.hp <= 0 || this.player2.hero.hp <= 0) {
-            if(this.gameEndListener) this.gameEndListener.notifyEnd()
+            if(isResearchMode) this.notifySimulationEnd()
             return true
         }
         return false
@@ -84,7 +111,7 @@ export class Game {
     changePlayerTurn(ignorePlay = false) {
         if(listenerFunction && this ==  visualizedGameInstance) listenerFunction()
         if (this.isGameOver()) {
-            return console.log('Game finished, can not change turn');
+          return console.log('Game finished, can not change turn');
         }
 
         this.setPlayerTurn(this.currentPlayer.name === this.player1.name ? this.player2 : this.player1);
@@ -171,6 +198,29 @@ export class Game {
             source: source,
             target: target
         })
+    }
+
+    notifySimulationEnd() {
+        let spareName = `${this.player1.type}-${this.player2.type}`
+        if(!window.stats) window.stats = {}
+        if(!window.stats[spareName]) window.stats[spareName] = [0, 0]
+        console.log('The winner is: ' + this.winner.name + ' ')
+        this.winner == this.player1 ? window.stats[spareName][0]++ : window.stats[spareName][1]++
+        console.log('Next simulation end: ')
+        console.log(window.stats)
+        this.runNextSimulation()
+    }
+
+    runNextSimulation() {
+      console.log('Simulation lunched...')
+      let nextGenState = pairGen.next()
+      if(!nextGenState.done) {
+        this.player1.setType(nextGenState.value.p1)
+        this.player1.setType(nextGenState.value.p2)
+        this.initGame()
+      } else {
+        console.log('All simulations finished. You can check results above or by typing window.stats')
+      }
     }
 
     getCurrentPlayer() {
