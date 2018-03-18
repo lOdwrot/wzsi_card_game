@@ -20,6 +20,7 @@ let cardsStats = (cards) => {
     return {hp: hp, attack: attack, count: count};
 };
 
+
 class Player {
     constructor(name, type) {
         this.hero = new Hero(name);
@@ -69,6 +70,17 @@ class Player {
             }
         }
     }
+
+    countStats(heroHealthMp, cardAttackMp, cardHealthMp, cardQuantityMp) {
+        let resultStats = 0
+        resultStats += heroHealthMp * this.hero.hp
+        this.hero.tableCards.forEach(v =>{
+            resultStats += v.hp * cardHealthMp
+            resultStats += v.attack * cardAttackMp
+        })
+        resultStats += this.hero.tableCards.length * cardQuantityMp
+        return resultStats
+    };
 }
 
 export default Player

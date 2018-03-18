@@ -11,7 +11,7 @@ export default class RandomSimulation {
 
 
         while(true) {
-            if (game.isGameOver()) return console.log('Random boot finished')
+            if (game.isGameOver()) return
             let possibleMoves = _.flatten(_.toArray(getPossibleMoves(this.player, game.getNotCurrentPlayer())))
             if(_.isEmpty(possibleMoves)) break
             let selectedMove = _.shuffle(possibleMoves)[0]
