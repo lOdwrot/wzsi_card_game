@@ -14,7 +14,7 @@ const PLAYER2_TYPE = AGGRESSIVE_PLAYER;
 
 var visualizedGameInstance = null;
 
-const isResearchMode = true
+const isResearchMode = false
 
 function* nextTestPair() {
   //set repeats per pair
@@ -22,10 +22,7 @@ function* nextTestPair() {
 
   //add players you want to
   let pairsTesed = [
-    {p1: RANDOM_PLAYER, p2: MONTE_CARLO},
-    {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
-    // {p1: RANDOM_PLAYER, p2: TABLE_CONTROL_PLAYER},
-    // {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER}
+    {p1: MONTE_CARLO, p2: AGGRESSIVE_PLAYER}
   ]
   for(let i in pairsTesed) {
     for(let r = 0; r < repeatsPerPair; r++) {
@@ -39,7 +36,7 @@ const pairGen = nextTestPair()
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [TABLE_CONTROL_PLAYER, RANDOM_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [MANUAL_PLAYER, MANUAL_PLAYER]);
     }
 
     return visualizedGameInstance
@@ -74,6 +71,10 @@ export class Game {
     }
 
     initGame(names, types) {
+        //reinit players to clean simulation rubbish
+        this.player1 = new Player(this.player1.name, this.player1.type)
+        this.player2 = new Player(this.player2.name, this.player2.type)
+
         if(isResearchMode && !this.hasStarted && this == visualizedGameInstance) {
           if(this.gameHistory) this.gameHistory = []
           this.hasStarted = true
@@ -115,7 +116,8 @@ export class Game {
     changePlayerTurn(ignorePlay = false) {
         if(listenerFunction && this ==  visualizedGameInstance) listenerFunction()
         if (this.isGameOver()) {
-          return console.log('Game finished, can not change turn');
+          return
+          // console.log('Game finished, can not change turn');
         }
 
         this.setPlayerTurn(this.currentPlayer.name === this.player1.name ? this.player2 : this.player1);
@@ -211,7 +213,7 @@ export class Game {
         console.log('The winner is: ' + this.winner.name + ' ')
         this.winner == this.player1 ? window.stats[spareName][0]++ : window.stats[spareName][1]++
         console.log('Next simulation end: ')
-        console.log(window.stats)
+        console.log(JSON.stringify(window.stats))
         this.runNextSimulation()
     }
 

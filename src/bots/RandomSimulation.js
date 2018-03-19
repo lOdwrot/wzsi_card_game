@@ -8,8 +8,6 @@ export default class RandomSimulation {
     }
 
     playTurn(game) {
-
-
         while(true) {
             if (game.isGameOver()) return
             let possibleMoves = _.flatten(_.toArray(getPossibleMoves(this.player, game.getNotCurrentPlayer())))
@@ -17,7 +15,6 @@ export default class RandomSimulation {
             let selectedMove = _.shuffle(possibleMoves)[0]
             game.findAndPlay(selectedMove.source, selectedMove.target)
         }
-
         game.changePlayerTurn()
     }
 

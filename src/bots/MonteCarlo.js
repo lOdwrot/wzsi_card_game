@@ -2,9 +2,9 @@ import {getPossibleTurns} from './Simulation.js'
 import {Game} from '../game/Table.js'
 import _ from 'lodash'
 
-const cParam = 1
-const randomSimulationRepeats = 5
-const timeLilit = 3 * 1000
+const cParam = 0.5
+const randomSimulationRepeats = 3
+const timeLilit = 30 * 1000
 
 export default class MonteCarloSimulation {
     constructor(player) {
@@ -12,30 +12,30 @@ export default class MonteCarloSimulation {
     }
 
     playTurn(game) {
-        if (game.isGameOver()) return console.log('MonteCarlo boot finished')
-        console.log('# turn start #')
+        if (game.isGameOver(false)) return console.log('MonteCarlo boot finished')
+        // console.log('# turn start #')
         let mRoot = new Node(_.cloneDeep(game), null)
 
 
         let startTime = (new Date()).getTime()
         while((new Date()).getTime() - startTime < timeLilit) {
-            console.log('* tree policy *')
+            // console.log('* tree policy *')
             let mNode = this.treePolicy(mRoot)
-            console.log('* default policy *')
+            // console.log('* default policy *')
             this.defaultPolicy(mNode)
         }
 
         let selectedState = mRoot.getBestChild(true)
-        console.log('selectedState')
-        console.log(selectedState)
+        // console.log('selectedState')
+        // console.log(selectedState)
         if(selectedState) {
             selectedState.moves.forEach(v => {
-                console.log('* simulate move *')
+                // console.log('* simulate move *')
                 game.findAndPlay(v.source, v.target)
             })
         }
 
-        console.log('# end turn #')
+        // console.log('# end turn #')
         game.changePlayerTurn()
     }
 
@@ -78,15 +78,15 @@ class Node {
 
     createStatesToExpand() {
         if(this.finalWinner || (!_.isEmpty(this.childs) && !_.isEmpty(this.toExpandStates))) return
-        console.log('* creating states for node *')
+        // console.log('* creating states for node *')
         let possibleTurns = getPossibleTurns(this.gameState)
-        console.log(possibleTurns)
+        // console.log(possibleTurns)
         possibleTurns.forEach(nGame => {
             this.toExpandStates.push(nGame)
         })
         this.toExpandStates.push(this.gameState)
         this.toExpandStates = _.shuffle(this.toExpandStates)
-        console.log('* created states for node *')
+        // console.log('* created states for node *')
     }
 
     expandChild() {

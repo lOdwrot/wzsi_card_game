@@ -3,9 +3,9 @@ import * as cards from "../game/Cards";
 import _ from 'lodash'
 
 const enemyHeroHealthMultiplayer = 15
-const enemyCardsAttackMultiplayer = 3
-const enemyCardsHealthMultiplayer = 4
-const enemyCardsQuantityMultiplayer = 4
+const enemyCardsAttackMultiplayer = 5
+const enemyCardsHealthMultiplayer = 3
+const enemyCardsQuantityMultiplayer = 5
 const myHeroHpMultiplayer = 1
 const myCardsAttackMultiplayer = 1
 const myCardsHelthMultiplayer = 1

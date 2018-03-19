@@ -2,9 +2,10 @@ import * as cards from '../game/Cards.js'
 import deepDiff from 'deep-diff'
 import _ from 'lodash'
 
-const maxStates = 10000
+const maxStates = 5000
 
 export const getPossibleTurns = (game) => {
+    let movesHashSet = new Set()
     let nTurns = getPossibleMoves(game.getCurrentPlayer(), game.getNotCurrentPlayer());
     let allTurns = nTurns;
     let nStates = [];
@@ -19,14 +20,14 @@ export const getPossibleTurns = (game) => {
             if(isNewState(nStates, nGame)) {
                 if(nStates.length > maxStates) return
                 nStates.push(nGame)
-                if(!nGame.isGameOver()){
+                if(!nGame.isGameOver(false)){
                     digPossibilities(nGame, getPossibleMoves(nGame.getCurrentPlayer(), nGame.getNotCurrentPlayer()))
                 }
             }
         })
     };
     digPossibilities(game, getPossibleMoves(game.getCurrentPlayer(), game.getNotCurrentPlayer()))
-    console.log('* possible states: ' + nStates.length)
+    // console.log('* possible states: ' + nStates.length)
     return nStates
 };
 
