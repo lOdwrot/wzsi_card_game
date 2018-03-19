@@ -18,14 +18,14 @@ const isResearchMode = true
 
 function* nextTestPair() {
   //set repeats per pair
-  let repeatsPerPair = 20
+  let repeatsPerPair = 5
 
   //add players you want to
   let pairsTesed = [
+    {p1: RANDOM_PLAYER, p2: MONTE_CARLO},
     {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
-    {p1: RANDOM_PLAYER, p2: AGGRESSIVE_PLAYER},
-    {p1: AGGRESSIVE_PLAYER, p2: RANDOM_PLAYER},
-    {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER},
+    // {p1: RANDOM_PLAYER, p2: TABLE_CONTROL_PLAYER},
+    // {p1: RANDOM_PLAYER, p2: RANDOM_PLAYER}
   ]
   for(let i in pairsTesed) {
     for(let r = 0; r < repeatsPerPair; r++) {
@@ -39,7 +39,7 @@ const pairGen = nextTestPair()
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [AGGRESSIVE_PLAYER, RANDOM_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [TABLE_CONTROL_PLAYER, RANDOM_PLAYER]);
     }
 
     return visualizedGameInstance

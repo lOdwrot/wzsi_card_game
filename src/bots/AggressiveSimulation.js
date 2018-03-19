@@ -19,7 +19,12 @@ export default class AggressiveSimulation {
 
     getMoves(game) {
         let gameStats = []
-        getPossibleTurns(game).forEach(v => {
+
+        let possibleTurns = getPossibleTurns(game)
+        let winState = possibleTurns.find(v => v.isGameOver(false))
+        if(winState) return winState.gameHistory.slice(-1)[0].moves
+
+        possibleTurns.forEach(v => {
             gameStats.push({
                 countStats: this.calculateStats(v),
                 moves: v.gameHistory.slice(-1)[0].moves

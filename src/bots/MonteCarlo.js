@@ -4,7 +4,7 @@ import _ from 'lodash'
 
 const cParam = 1
 const randomSimulationRepeats = 5
-const timeLilit = 1 * 1000
+const timeLilit = 3 * 1000
 
 export default class MonteCarloSimulation {
     constructor(player) {
