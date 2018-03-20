@@ -18,11 +18,11 @@ const isResearchMode = false
 
 function* nextTestPair() {
   //set repeats per pair
-  let repeatsPerPair = 5
+  let repeatsPerPair = 10
 
   //add players you want to
   let pairsTesed = [
-    {p1: MONTE_CARLO, p2: AGGRESSIVE_PLAYER}
+    {p1: AGGRESSIVE_PLAYER, p2: AGGRESSIVE_PLAYER}
   ]
   for(let i in pairsTesed) {
     for(let r = 0; r < repeatsPerPair; r++) {
@@ -36,7 +36,7 @@ const pairGen = nextTestPair()
 
 export const getVisualizedGameInstance = () => {
     if (visualizedGameInstance === null) {
-        visualizedGameInstance = new Game(['P1', 'P2'], [MANUAL_PLAYER, MANUAL_PLAYER]);
+        visualizedGameInstance = new Game(['P1', 'P2'], [MANUAL_PLAYER, MONTE_CARLO]);
     }
 
     return visualizedGameInstance
@@ -82,7 +82,7 @@ export class Game {
         }
         this.winner = null
         this.gameHistory = []
-        this.manaCounter = 0;
+        this.manaCounter = 1;
 
         if (names && names.length === 2 && types && types.length === 2) {
             this.player1 = new Player(names[0], types[0]);

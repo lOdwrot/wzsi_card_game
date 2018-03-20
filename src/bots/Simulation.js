@@ -10,6 +10,8 @@ export const getPossibleTurns = (game) => {
     let allTurns = nTurns;
     let nStates = [];
 
+    let statesSet = new Set()
+
     let digPossibilities = (startState, possibleMoves) => {
         let mergedMoves = [...possibleMoves.attacks, ...possibleMoves.onTable]
         mergedMoves.forEach(move => {
@@ -17,7 +19,8 @@ export const getPossibleTurns = (game) => {
             nGame.findAndPlay(move.source, move.target)
 
             // filter equal states
-            if(isNewState(nStates, nGame)) {
+            // if(isNewState(nStates, nGame)) {
+            if(isNewStateHash(statesSet, nGame)) {
                 if(nStates.length > maxStates) return
                 nStates.push(nGame)
                 if(!nGame.isGameOver(false)){
@@ -30,6 +33,15 @@ export const getPossibleTurns = (game) => {
     // console.log('* possible states: ' + nStates.length)
     return nStates
 };
+
+const isNewStateHash = (statesSet, nState) => {
+    let stateString = nState.player1.countIdentyfire() +  nState.player2.countIdentyfire() * 10000000
+    // let stateString = nState.player1.countIdentyfire() + 'M' + nState.player2.countIdentyfire()
+    if(statesSet.has(stateString)) return false
+
+    statesSet.add(stateString)
+    return true
+}
 
 const isNewState = (stateTabs, nState) => {
 

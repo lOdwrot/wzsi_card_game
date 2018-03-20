@@ -33,6 +33,16 @@ class Player {
       this.simulation = this.getSimulation();
     }
 
+    countIdentyfire() {
+      let result = this.hero.hp * 10
+      this.hero.tableCards.forEach((val, index) => {
+        let multiplayer = Math.pow(4, index + 2)
+        result += (val.hp * multiplayer + val.attack * multiplayer)
+      })
+      result += this.hero.handCards.length
+      return parseInt(result)
+    }
+
     getSimulation() {
         switch (this.type) {
             case MANUAL_PLAYER:

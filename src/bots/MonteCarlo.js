@@ -3,22 +3,74 @@ import {Game} from '../game/Table.js'
 import _ from 'lodash'
 
 const cParam = 0.5
-const randomSimulationRepeats = 3
-const timeLilit = 30 * 1000
+const randomSimulationRepeats = 1
 
 export default class MonteCarloSimulation {
     constructor(player) {
-        this.player = player;
+        this.player = player
+        this.timeLilit = 5 * 1000
+        this.isLocked = false
+
+        window.setLock = (lock) => this.isLocked = lock
+        window.setTimeLimit = (secs) => this.timeLilit = secs * 1000
+        window.forceMove = () => this.forceGame()
+        window.countTreeLevel = (node) => {
+            let root = node ? node : window.toAnaliseRoot
+            let deepNodes = []
+
+            let dive = (v) => {
+                if(!_.isEmpty(v.childs)) v.childs.forEach(c => dive(c))
+                else deepNodes.push(v)
+            }
+            dive(node)
+
+            let restult = 0
+            deepNodes.forEach(v => {
+                let lvlCounter = 0
+                let mNode = v
+                let startNode = v
+                while(!!mNode.parent) {
+                    lvlCounter++
+                    mNode = mNode.parent
+                }
+                if(restult < lvlCounter) {
+                    restult = lvlCounter
+                    window.deepestNode = startNode
+                }
+            })
+            return restult
+        }
+
+        window.countLifts = (node, counter = 0) => {
+            node.childs.forEach(v => {
+                if(!_.isEmpty(v.childs)) counter += window.countLifts(v, counter)
+                else counter += _.isEmpty(v.toExpandStates) && _.isEmpty(v.childs) ? 1 : 0
+            })
+
+            return counter
+        }
+    }
+
+    forceGame() {
+        this.playTurn(this.lastGame)
+        this.showStats()
+    }
+
+    showStats() {
+        console.log(window.toAnaliseRoot)
+        console.log(window.countTreeLevel(window.toAnaliseRoot))
+        console.log(window.countLifts(window.toAnaliseRoot, 0))
     }
 
     playTurn(game) {
+        this.lastGame = game
         if (game.isGameOver(false)) return console.log('MonteCarlo boot finished')
         // console.log('# turn start #')
         let mRoot = new Node(_.cloneDeep(game), null)
 
 
         let startTime = (new Date()).getTime()
-        while((new Date()).getTime() - startTime < timeLilit) {
+        while((new Date()).getTime() - startTime < this.timeLilit) {
             // console.log('* tree policy *')
             let mNode = this.treePolicy(mRoot)
             // console.log('* default policy *')
@@ -28,15 +80,20 @@ export default class MonteCarloSimulation {
         let selectedState = mRoot.getBestChild(true)
         // console.log('selectedState')
         // console.log(selectedState)
-        if(selectedState) {
+        if(selectedState && !this.isLocked) {
             selectedState.moves.forEach(v => {
                 // console.log('* simulate move *')
                 game.findAndPlay(v.source, v.target)
             })
         }
 
+        window.toAnaliseRoot = mRoot
         // console.log('# end turn #')
-        game.changePlayerTurn()
+        if(!this.isLocked) {
+            game.changePlayerTurn()
+            this.showStats()
+        }
+
     }
 
     treePolicy(node) {
